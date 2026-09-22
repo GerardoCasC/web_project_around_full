@@ -1,0 +1,82 @@
+import type { RequestHandler } from 'express';
+import { Card } from '../models/card.js';
+
+export const getCards: RequestHandler = async (req, res) => {
+  const cards = await Card.find({});
+  const userId = req.user?._id;
+  const cardsWithIsLiked = cards.map((card) => ({
+    ...card.toObject(),
+    isLiked: card.likes.some((id) => id.toString() === userId),
+  }));
+  res.send(cardsWithIsLiked);
+};
+
+export const getCardsById: RequestHandler = async (req, res) => {
+  const card = await Card.findById(req.params.card_id);
+  if (!card) {
+    throw Object.assign(
+      new Error(`No se encontró ninguna tarjeta con ese id`),
+      {
+        statusCode: 404,
+      },
+    );
+  }
+
+  res.status(200).json(card);
+};
+
+export const postCards: RequestHandler = async (req, res) => {
+  const newCard = await Card.create(req.body);
+  res.status(201).json(newCard);
+};
+
+export const deleteCardsById: RequestHandler = async (req, res) => {
+  const card = await Card.findByIdAndDelete(req.params.card_id);
+  if (!card) {
+    throw Object.assign(
+      new Error('No se encontró ninguna tarjeta con ese id'),
+      {
+        statusCode: 404,
+      },
+    );
+  }
+  res.status(200).json(card);
+};
+
+export const likeCard: RequestHandler = async (req, res) => {
+  const card = await Card.findByIdAndUpdate(
+    req.params.id,
+    { $addToSet: { likes: req.user?._id } },
+    { new: true },
+  );
+  if (!card) {
+    throw Object.assign(
+      new Error('No se encontró ninguna tarjeta con ese id'),
+      {
+        statusCode: 404,
+      },
+    );
+  }
+  const userId = req.user?._id;
+  res.send({
+    ...card.toObject(),
+    isLiked: card.likes.some((id) => id.toString() === userId),
+  });
+};
+
+export const dislikeCard: RequestHandler = async (req, res) => {
+  const card = await Card.findByIdAndUpdate(
+    req.params.id,
+    { $pull: { likes: req.user?._id } },
+    { new: true },
+  );
+  if (!card) {
+    throw Object.assign(
+      new Error('No se encontró ninguna tarjeta con ese id'),
+      {
+        statusCode: 404,
+      },
+    );
+  }
+  res.status(200).json(card);
+};
