@@ -2,6 +2,7 @@ import express from 'express';
 import router from './routes/index.js';
 import { errorHandler } from './middleware/error-handler.js';
 import mongoose from 'mongoose';
+import cors from 'cors';
 
 mongoose
   .connect('mongodb://127.0.0.1:27017/egresadosdb')
@@ -15,6 +16,7 @@ app.use((req, res, next) => {
 
   next();
 });
+app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));

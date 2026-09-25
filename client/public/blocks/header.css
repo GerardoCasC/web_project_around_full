@@ -3,15 +3,36 @@
   font-family: "Inter", Arial, sans-serif;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   border-bottom: 1px solid rgba(84, 84, 84, 0.7);
 }
-
+.header__right-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
 .header__logo {
   width: 173px;
   height: 33px;
   object-fit: contain;
 }
-
+.header__user-email {
+  color: #ffffff;
+  font-size: 18px;
+}
+.header__button {
+  background: none;
+  border: 0;
+  font-size: 18px;
+  color: #ffffff;
+}
+.header__button:hover {
+  background: none;
+  border: 0;
+  color: #ffffff;
+  opacity: 0.6;
+  cursor: pointer;
+}
 @media screen and (max-width: 544px) {
   .header {
     min-height: 85px;

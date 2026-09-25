@@ -23,12 +23,14 @@
   },
   "homepage": "https://github.com/GerardoCasC/web_project_around_express#readme",
   "dependencies": {
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "mongoose": "^9.10.0",
     "typescript": "^6.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^26.3.0",
     "eslint": "^10.9.1",

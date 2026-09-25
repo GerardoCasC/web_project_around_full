@@ -9,11 +9,10 @@ import type {
 
 class Api {
   private baseUrl: string;
-  private headers: Record<string, string> = {}
+  private headers: Record<string, string> = {};
   constructor(baseUrl: string, headers: Record<string, string> = {}) {
     this.baseUrl = baseUrl;
     this.headers = headers;
-
   }
   private async handleResponse<T>(response: Response): Promise<T> {
     if (!response.ok) {
@@ -50,9 +49,7 @@ class Api {
       throw error;
     }
   }
-  public async updateInfoUser(
-    userData: FormEditValues,
-  ): Promise<UserData> {
+  public async updateInfoUser(userData: FormEditValues): Promise<UserData> {
     try {
       const response = await fetch(`${this.baseUrl}/users/me`, {
         method: "PATCH",
@@ -76,6 +73,7 @@ class Api {
         body: JSON.stringify({
           name: cardData.name,
           link: cardData.link,
+          owner: cardData.user_id,
         }),
       });
       return await this.handleResponse<CardData>(response);
@@ -84,9 +82,7 @@ class Api {
       throw error;
     }
   }
-  public async updateAvatar(
-    value: FormUpdateAvatar,
-  ): Promise<UserData> {
+  public async updateAvatar(value: FormUpdateAvatar): Promise<UserData> {
     try {
       const response = await fetch(`${this.baseUrl}/users/me/avatar`, {
         method: "PATCH",
@@ -138,9 +134,8 @@ class Api {
     }
   }
 }
-const api = new Api("https://around-api.es.tripleten-services.com/v1", {
-          authorization: "6bb5e120-4ce0-4a3c-8c06-4acdb84033fc",
-          "Content-Type": "application/json",
-        });
+const api = new Api("http://localhost:3001", {
+  "Content-Type": "application/json",
+});
 
-        export default api;
+export default api;

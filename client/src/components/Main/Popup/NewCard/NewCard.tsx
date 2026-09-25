@@ -2,13 +2,15 @@ import { useState, useContext } from "react";
 import CurrentUserContext from "../../../../contexts/CurrentUserContext";
 
 export default function NewCard(): React.JSX.Element {
-  const { handleAddPlaceSubmit } = useContext(CurrentUserContext);
+  const { currentUser, handleAddPlaceSubmit } = useContext(CurrentUserContext);
   const [name, setName] = useState("");
   const [link, setLink] = useState("");
+  const user_id = currentUser?._id;
 
   const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
-    handleAddPlaceSubmit({ name, link });
+
+    handleAddPlaceSubmit({ name, link, user_id });
   };
   return (
     <form

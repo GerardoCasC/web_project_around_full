@@ -12,7 +12,7 @@ const cardSchema = new moongose.Schema({
     validate: {
       validator: (v: string) =>
         new RegExp(
-          /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
+          /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w.=&-?:]*)*\/?$/,
         ).test(v),
       message: 'Invalid URL format',
     },

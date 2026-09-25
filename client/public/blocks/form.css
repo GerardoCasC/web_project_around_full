@@ -1,0 +1,54 @@
+.login__form,
+.register__form {
+  display: flex;
+  flex-direction: column;
+  font-family: "Inter", Arial, sans-serif;
+  margin: 0 auto;
+  color: #cccccc;
+  width: 35vh;
+}
+.login__form-title,
+.register__form-title {
+  margin-top: 60px;
+  margin-bottom: 50px;
+  color: #fff;
+  font-weight: 900;
+  font-size: 24px;
+  text-align: center;
+}
+.form__field input::placeholder {
+  color: #cccccc;
+  opacity: 1;
+}
+.form__input {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #cccccc;
+  color: #ffffff;
+  font-size: 14px;
+  outline: none;
+  height: 30px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+.form__input--last {
+  margin-bottom: 0px;
+}
+.form__button {
+  margin-top: 216px;
+  height: 50px;
+  width: 358;
+}
+.form__button:hover {
+  cursor: pointer;
+  opacity: 0.85;
+}
+.form__register-here-button,
+.form__login-here-button {
+  text-align: center;
+}
+.form__register-here-button:hover,
+.form__login-here-button:hover {
+  opacity: 0.6;
+  cursor: pointer;
+}

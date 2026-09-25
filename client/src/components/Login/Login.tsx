@@ -1,0 +1,91 @@
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import CurrentUserContext from "../../contexts/CurrentUserContext";
+import auth from "../../utils/Auth";
+import type { PopupConfig } from "../../types/types";
+import Popup from "../Main/Popup/Popup";
+import InfoTooltip from "../../components/InfoTooltip/InfoTooltip";
+interface LoginProps {
+  handleOpenPopup: (popup: PopupConfig) => void;
+  handleClosePopup: () => void;
+  popup: PopupConfig | null;
+}
+function Login(props: LoginProps) {
+  const { login } = useContext(CurrentUserContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const errorPopup: PopupConfig = {
+    title: "",
+    children: <InfoTooltip isValidated={false} />,
+  };
+  const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      const loginRes = await auth.loginUser({ email, password });
+      const user = await auth.getCurrentUser(loginRes.token);
+      login(loginRes.token, user.data);
+      navigate("/");
+    } catch (error) {
+      props.handleOpenPopup(errorPopup);
+    }
+  };
+  return (
+    <>
+      <form
+        onSubmit={handleSubmit}
+        className="login__form"
+        id="login-form"
+        name="login-form"
+        noValidate
+      >
+        <p className="login__form-title">Inicia sesión</p>
+        <label className="form__field">
+          <input
+            id="email"
+            className="form__input formp__input_type_email"
+            name="email"
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Correo electrónico"
+            minLength={2}
+            maxLength={30}
+            required
+            type="text"
+          />
+        </label>
+        <label className="form__field">
+          <input
+            id="password"
+            className="form__input form__input_type_password form__input--last"
+            name="password"
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Contraseña"
+            required
+            type="password"
+          />
+        </label>
+        <button className="button form__button" type="submit">
+          Iniciar sesión
+        </button>
+        <p
+          className="form__register-here-button"
+          onClick={() => {
+            navigate("/register");
+          }}
+        >
+          ¿Aún no eres miembro? Regístrate aquí.
+        </p>
+      </form>
+      {props.popup && (
+        <Popup
+          onClose={props.handleClosePopup}
+          isOpen={props.popup !== null}
+          title={props.popup.title}
+        >
+          {props.popup.children}
+        </Popup>
+      )}
+    </>
+  );
+}
+export default Login;
