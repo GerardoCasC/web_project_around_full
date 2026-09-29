@@ -61,8 +61,7 @@ function App() {
     checkAuth();
   }, []);
   const handleRegisterUser = async (userData: FormSignValues) => {
-    const updatedUser = await auth.registerUser(userData);
-    setCurrentUser(updatedUser.data);
+    await auth.registerUser(userData);
   };
   const login = async (user: FormSignValues) => {
     const authLogin = await auth.loginUser(user);
