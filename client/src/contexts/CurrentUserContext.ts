@@ -3,10 +3,10 @@ import type { CurrentUserContextType } from "../types/types";
 
 const CurrentUserContext = createContext<CurrentUserContextType>({
   currentUser: null,
-  handleUpdateUser: async (userData) => {},
-  handleUpdateAvatar: async (avatarData) => {},
-  handleAddPlaceSubmit: async (cardData) => {},
-  handleRegisterUser: async (userData) => {},
+  handleUpdateUser: async () => {},
+  handleUpdateAvatar: async () => {},
+  handleAddPlaceSubmit: async () => {},
+  handleRegisterUser: async () => {},
   isAuthenticated: false,
   login: () => {},
   logout: () => {},

@@ -1,7 +1,6 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import CurrentUserContext from "../../contexts/CurrentUserContext";
-import auth from "../../utils/Auth";
 import type { PopupConfig } from "../../types/types";
 import Popup from "../Main/Popup/Popup";
 import InfoTooltip from "../../components/InfoTooltip/InfoTooltip";
@@ -22,11 +21,10 @@ function Login(props: LoginProps) {
   const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const loginRes = await auth.loginUser({ email, password });
-      const user = await auth.getCurrentUser(loginRes.token);
-      login(loginRes.token, user.data);
+      await login({ email, password });
       navigate("/");
     } catch (error) {
+      console.error(error);
       props.handleOpenPopup(errorPopup);
     }
   };
@@ -70,7 +68,7 @@ function Login(props: LoginProps) {
         <p
           className="form__register-here-button"
           onClick={() => {
-            navigate("/register");
+            navigate("/signup");
           }}
         >
           ¿Aún no eres miembro? Regístrate aquí.

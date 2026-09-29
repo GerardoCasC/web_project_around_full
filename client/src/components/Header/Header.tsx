@@ -8,12 +8,12 @@ function Header() {
   const navigate = useNavigate();
   const { isAuthenticated, logout, currentUser } =
     useContext(CurrentUserContext);
-  const isLoginPage = location.pathname === "/login";
+  const isLoginPage = location.pathname === "/signin";
   const ButtonText = isLoginPage ? "Registrarse" : "Iniciar sesión";
-  const newRoute = isLoginPage ? "/register" : "/login";
+  const newRoute = isLoginPage ? "/signup" : "/signin";
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/signin");
   };
   return (
     <header className="header page__section">

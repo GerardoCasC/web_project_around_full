@@ -34,6 +34,7 @@ function Register(props: RegisterProps) {
         props.handleOpenPopup(sucessPopup);
       }, 100);
     } catch (error) {
+      console.error(error);
       props.handleOpenPopup(errorPopup);
     }
   };
@@ -78,7 +79,7 @@ function Register(props: RegisterProps) {
         <p
           className="form__login-here-button"
           onClick={() => {
-            navigate("/login");
+            navigate("/signin");
           }}
         >
           ¿Ya eres miembro? Inicia sesión aquí

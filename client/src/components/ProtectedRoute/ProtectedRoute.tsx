@@ -5,7 +5,7 @@ import CurrentUserContext from "../../contexts/CurrentUserContext";
 export function ProtectedRoute() {
   const { isAuthenticated, isLoading } = useContext(CurrentUserContext);
   if (isLoading) return null;
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+  return isAuthenticated ? <Outlet /> : <Navigate to="/signin" replace />;
 }
 
 export function PublicRoute() {

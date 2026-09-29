@@ -48,7 +48,7 @@ export interface CurrentUserContextType {
   handleAddPlaceSubmit: (cardData: FormAddCardValues) => Promise<void>;
   handleRegisterUser: (userData: FormSignValues) => Promise<void>;
   isAuthenticated: boolean;
-  login: (token: string, user: UserData) => void;
+  login: (user: FormSignValues) => void;
   logout: () => void;
   isLoading: boolean;
 }

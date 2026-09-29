@@ -1,9 +1,10 @@
 import Header from "./Header/Header";
+
 import Main from "./Main/Main";
 import Footer from "./Footer/Footer";
 import Login from "./Login/Login.tsx";
 import Register from "./Register/Register.tsx";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import {
   ProtectedRoute,
   PublicRoute,
@@ -11,7 +12,6 @@ import {
 import { useEffect, useState } from "react";
 import api from "../utils/Api.ts";
 import auth from "../utils/Auth.ts";
-0;
 import CurrentUserContext from "../contexts/CurrentUserContext";
 import type {
   UserData,
@@ -29,16 +29,15 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [cards, setCards] = useState<CardData[]>([]);
   const [popup, setPopup] = useState<PopupConfig | null>(null);
-
   useEffect(() => {
-    const token = localStorage.getItem("auth-token");
+    const checkAuth = async () => {
+      const token = localStorage.getItem("auth-token");
 
-    if (!token) {
-      setIsLoading(false);
-      return;
-    }
+      if (!token) {
+        setIsLoading(false);
+        return;
+      }
 
-    (async () => {
       try {
         const [user, fullProfile, initialCards] = await Promise.all([
           auth.getCurrentUser(token),
@@ -58,30 +57,32 @@ function App() {
       } finally {
         setIsLoading(false);
       }
-    })();
+    };
+    checkAuth();
   }, []);
   const handleRegisterUser = async (userData: FormSignValues) => {
-    try {
-      const updatedUser = await auth.registerUser(userData);
-      setCurrentUser(updatedUser.data);
-    } catch (error) {
-      throw error;
-    }
+    const updatedUser = await auth.registerUser(userData);
+    setCurrentUser(updatedUser.data);
   };
-  async function login(token: string, user: UserData) {
-    localStorage.setItem("auth-token", token);
+  const login = async (user: FormSignValues) => {
+    const authLogin = await auth.loginUser(user);
+    const LoginUserData = await auth.getCurrentUser(authLogin.token);
+    localStorage.setItem("auth-token", authLogin.token);
     const [userData, initialCards] = await Promise.all([
       api.getUserInfo(),
       api.getInitialCards(),
     ]);
+    console.log(LoginUserData);
+    console.log(userData);
     setCurrentUser((prevUser) => ({
       ...prevUser,
+      ...LoginUserData.data,
       ...userData,
-      ...user,
     }));
+    console.log(currentUser);
     setCards(initialCards);
     setIsAuthenticated(true);
-  }
+  };
   function logout() {
     localStorage.removeItem("auth-token");
     setCurrentUser(null);
@@ -130,7 +131,10 @@ function App() {
   const handleUpdateAvatar = async (avatarData: FormUpdateAvatar) => {
     try {
       const updatedUser = await api.updateAvatar(avatarData);
-      setCurrentUser(updatedUser);
+      setCurrentUser((prevUser) => ({
+        ...prevUser,
+        ...updatedUser,
+      }));
       handleClosePopup();
     } catch (error) {
       console.error(error);
@@ -184,7 +188,7 @@ function App() {
           </Route>
           <Route element={<PublicRoute />}>
             <Route
-              path="/login"
+              path="/signin"
               element={
                 <>
                   {" "}
@@ -198,7 +202,7 @@ function App() {
               }
             />
             <Route
-              path="/register"
+              path="/signup"
               element={
                 <>
                   {" "}
@@ -212,6 +216,7 @@ function App() {
               }
             />
           </Route>
+          <Route path="*" element={<Navigate to="/signin" replace />} />
         </Routes>
       </div>
     </CurrentUserContext.Provider>
