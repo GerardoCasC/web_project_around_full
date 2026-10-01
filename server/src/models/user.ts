@@ -17,9 +17,7 @@ const userSchema = new moongose.Schema({
     type: String,
     validate: {
       validator: (v: string) =>
-        new RegExp(
-          /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w.=&-?:]*)*\/?$/,
-        ).test(v),
+        /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w.=&-?:]*)*\/?$/.test(v),
       message: 'Invalid URL format',
     },
     required: true,

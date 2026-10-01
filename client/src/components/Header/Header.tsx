@@ -1,4 +1,4 @@
-import logo from "/images/logo.svg";
+import logo from "/src/images/logo.svg";
 import { useContext } from "react";
 import CurrentUserContext from "../../contexts/CurrentUserContext";
 import { useLocation, useNavigate } from "react-router-dom";

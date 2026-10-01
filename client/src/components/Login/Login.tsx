@@ -4,6 +4,7 @@ import CurrentUserContext from "../../contexts/CurrentUserContext";
 import type { PopupConfig } from "../../types/types";
 import Popup from "../Main/Popup/Popup";
 import InfoTooltip from "../../components/InfoTooltip/InfoTooltip";
+import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 interface LoginProps {
   handleOpenPopup: (popup: PopupConfig) => void;
   handleClosePopup: () => void;
@@ -11,6 +12,7 @@ interface LoginProps {
 }
 function Login(props: LoginProps) {
   const { login } = useContext(CurrentUserContext);
+  const { errors, handleChange } = useFormWithValidation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -43,25 +45,35 @@ function Login(props: LoginProps) {
             id="email"
             className="form__input formp__input_type_email"
             name="email"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              handleChange(e);
+            }}
             placeholder="Correo electrónico"
             minLength={2}
             maxLength={30}
             required
-            type="text"
+            type="email"
           />
         </label>
+        {<p className="form__error">{errors.email}</p>}
         <label className="form__field">
           <input
             id="password"
             className="form__input form__input_type_password form__input--last"
             name="password"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              handleChange(e);
+            }}
             placeholder="Contraseña"
+            minLength={2}
+            maxLength={30}
             required
             type="password"
           />
         </label>
+        {<p className="form__error">{errors.password}</p>}
         <button className="button form__button" type="submit">
           Iniciar sesión
         </button>

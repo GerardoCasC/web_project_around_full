@@ -10,7 +10,7 @@ export default function InfoTooltip(
       {isValidated ? (
         <>
           <div className="tooltip__content">
-            <img src={"../../public/images/is-validated.svg"} alt={"Sucess"} />
+            <img src={"../src/images/is-validated.svg"} alt={"Sucess"} />
 
             <p className="tooltip__message">¡Correcto! Ya estás registrado.</p>
           </div>
@@ -18,7 +18,7 @@ export default function InfoTooltip(
       ) : (
         <>
           <div className="tooltip__content">
-            <img src={"../../public/images/no-validated.svg"} alt={"Error"} />
+            <img src={"../src/images/no-validated.svg"} alt={"Error"} />
 
             <p className="tooltip__message">
               Uy, algo salió mal. Por favor, inténtalo de nuevo.

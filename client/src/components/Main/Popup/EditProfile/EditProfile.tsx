@@ -1,10 +1,12 @@
 import { useState, useContext } from "react";
 import CurrentUserContext from "../../../../contexts/CurrentUserContext";
+import { useFormWithValidation } from "../../../../hooks/useFormWithValidation";
 
 export default function EditProfile(): React.JSX.Element {
   const { currentUser, handleUpdateUser } = useContext(CurrentUserContext);
   const [name, setName] = useState(currentUser?.name || "");
   const [description, setDescription] = useState(currentUser?.about || "");
+  const { errors, isValid, handleChange } = useFormWithValidation();
 
   const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -21,7 +23,10 @@ export default function EditProfile(): React.JSX.Element {
       <input
         className="popup__input popup__input_type_name"
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={(e) => {
+          setName(e.target.value);
+          handleChange(e);
+        }}
         name="name"
         placeholder="Nombre"
         type="text"
@@ -29,11 +34,14 @@ export default function EditProfile(): React.JSX.Element {
         maxLength={40}
         required
       />
-      <span className="name-input-error popup__input-error"></span>
+      {<p className="form__error">{errors.name}</p>}
       <input
         className="popup__input popup__input_type_about"
         value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        onChange={(e) => {
+          setDescription(e.target.value);
+          handleChange(e);
+        }}
         name="about"
         placeholder="Acerca de mí"
         type="text"
@@ -41,8 +49,12 @@ export default function EditProfile(): React.JSX.Element {
         maxLength={200}
         required
       />
-      <span className="about-input-error popup__input-error"></span>
-      <button className="button popup__button" type="submit">
+      {errors.about && <p className="form__error">{errors.about}</p>}
+      <button
+        className="button popup__button"
+        type="submit"
+        disabled={!isValid}
+      >
         Guardar
       </button>
     </form>
