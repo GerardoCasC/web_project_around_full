@@ -7,14 +7,15 @@ import {
   likeCard,
   dislikeCard,
 } from '../controllers/cards.js';
+import { auth } from '../middleware/auth.js';
 
 const cardsRouter = Router();
 
-cardsRouter.get('/', getCards);
-cardsRouter.get('/:card_id', getCardsById);
-cardsRouter.post('/', postCards);
-cardsRouter.delete('/:card_id', deleteCardsById);
-cardsRouter.put('/:id/likes', likeCard);
-cardsRouter.delete('/:id/likes', dislikeCard);
+cardsRouter.get('/', auth, getCards);
+cardsRouter.get('/:card_id', auth, getCardsById);
+cardsRouter.post('/', auth, postCards);
+cardsRouter.delete('/:card_id', auth, deleteCardsById);
+cardsRouter.put('/:id/likes', auth, likeCard);
+cardsRouter.delete('/:id/likes', auth, dislikeCard);
 
 export { cardsRouter };

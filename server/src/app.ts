@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import router from './routes/index.js';
 import { errorHandler } from './middleware/error-handler.js';
@@ -9,13 +11,6 @@ mongoose
   .catch((err) => console.error('Error de conexión', err));
 
 const app = express();
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6aa32af2fc106389dd5060fe',
-  };
-
-  next();
-});
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
