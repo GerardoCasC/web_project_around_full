@@ -22,6 +22,7 @@ class Auth {
     userData: FormSignValues,
   ): Promise<{ data: UserData }> {
     try {
+      console.log(this.authUrl);
       const response = await fetch(`${this.authUrl}/users/signup`, {
         method: "POST",
         headers: this.headers,
