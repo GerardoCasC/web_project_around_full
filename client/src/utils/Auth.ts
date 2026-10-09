@@ -1,5 +1,7 @@
 import type { UserData, FormSignValues } from "../types/types";
 
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
+
 class Auth {
   private authUrl: string;
   private headers: Record<string, string> = {};
@@ -20,7 +22,7 @@ class Auth {
     userData: FormSignValues,
   ): Promise<{ data: UserData }> {
     try {
-      const response = await fetch(`${this.authUrl}/signup`, {
+      const response = await fetch(`${this.authUrl}/users/signup`, {
         method: "POST",
         headers: this.headers,
         body: JSON.stringify({
@@ -36,7 +38,7 @@ class Auth {
   }
   public async loginUser(userData: FormSignValues): Promise<{ token: string }> {
     try {
-      const response = await fetch(`${this.authUrl}/signin`, {
+      const response = await fetch(`${this.authUrl}/users/signin`, {
         method: "POST",
         headers: this.headers,
         body: JSON.stringify({
@@ -51,24 +53,9 @@ class Auth {
       throw error;
     }
   }
-  public async getCurrentUser(token: string): Promise<{ data: UserData }> {
-    try {
-      const response = await fetch(`${this.authUrl}/users/me`, {
-        method: "GET",
-        headers: {
-          "Content-Type": this.headers["Content-Type"],
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return await this.handleResponse<{ data: UserData }>(response);
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
 }
 
-const auth = new Auth("https://se-register-api.en.tripleten-services.com/v1", {
+const auth = new Auth(API_URL, {
   "Content-Type": "application/json",
 });
 export default auth;

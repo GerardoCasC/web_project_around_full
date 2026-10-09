@@ -12,12 +12,10 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const token = authHeader.replace('Bearer ', '');
-    console.log(token);
-    console.log(process.env.JWT_SECRET!);
+
     const payload = jwt.verify(token, process.env.JWT_SECRET!) as {
       _id: string;
     };
-    console.log('Hola');
     req.user = payload;
     next();
   } catch {

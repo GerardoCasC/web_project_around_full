@@ -10,11 +10,7 @@ export interface CardData {
   createdAt: string;
   isLiked: boolean;
 }
-export interface UserSelector {
-  nameSelector: string;
-  aboutSelector: string;
-  profileImageSelector: string;
-}
+
 export interface UserData {
   about: string;
   avatar: string;

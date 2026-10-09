@@ -39,16 +39,12 @@ function App() {
       }
 
       try {
-        const [user, fullProfile, initialCards] = await Promise.all([
-          auth.getCurrentUser(token),
+        const [user, initialCards] = await Promise.all([
           api.getUserInfo(),
           api.getInitialCards(),
         ]);
-        const updatedUser = {
-          ...user.data,
-          ...fullProfile,
-        };
-        setCurrentUser(updatedUser);
+
+        setCurrentUser(user);
         setCards(initialCards);
         setIsAuthenticated(true);
       } catch (error) {
@@ -65,20 +61,16 @@ function App() {
   };
   const login = async (user: FormSignValues) => {
     const authLogin = await auth.loginUser(user);
-    const LoginUserData = await auth.getCurrentUser(authLogin.token);
     localStorage.setItem("auth-token", authLogin.token);
-    const [userData, initialCards] = await Promise.all([
-      api.getUserInfo(),
-      api.getInitialCards(),
-    ]);
-    console.log(LoginUserData);
-    console.log(userData);
+    const LoginUserData = await api.getUserInfo();
+
+    const initialCards = await api.getInitialCards();
+
     setCurrentUser((prevUser) => ({
       ...prevUser,
-      ...LoginUserData.data,
-      ...userData,
+      ...LoginUserData,
     }));
-    console.log(currentUser);
+
     setCards(initialCards);
     setIsAuthenticated(true);
   };

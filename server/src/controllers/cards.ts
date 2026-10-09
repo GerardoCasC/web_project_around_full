@@ -2,8 +2,10 @@ import type { RequestHandler } from 'express';
 import { Card } from '../models/card.js';
 
 export const getCards: RequestHandler = async (req, res) => {
-  const cards = await Card.find({});
-  const userId = req.user?._id;
+  const userId = req.user?._id?.toString();
+
+  const cards = await Card.find({ owner: userId! });
+
   const cardsWithIsLiked = cards.map((card) => ({
     ...card.toObject(),
     isLiked: card.likes.some((id) => id.toString() === userId),
@@ -40,6 +42,12 @@ export const deleteCardsById: RequestHandler = async (req, res) => {
       },
     );
   }
+  if (card.owner.toString() !== req.user?._id?.toString()) {
+    res
+      .status(403)
+      .json({ message: 'No tienes permiso para eliminar esta tarjeta' });
+    return;
+  }
   res.status(200).json(card);
 };
 
@@ -47,7 +55,7 @@ export const likeCard: RequestHandler = async (req, res) => {
   const card = await Card.findByIdAndUpdate(
     req.params.id,
     { $addToSet: { likes: req.user?._id } },
-    { new: true },
+    { returnDocument: 'after' },
   );
   if (!card) {
     throw Object.assign(
@@ -57,10 +65,17 @@ export const likeCard: RequestHandler = async (req, res) => {
       },
     );
   }
-  const userId = req.user?._id;
+  if (card.owner.toString() !== req.user?._id?.toString()) {
+    res
+      .status(403)
+      .json({ message: 'No tienes permiso para eliminar esta tarjeta' });
+    return;
+  }
   res.send({
     ...card.toObject(),
-    isLiked: card.likes.some((id) => id.toString() === userId),
+    isLiked: card.likes.some(
+      (id) => id.toString() === req.user?._id?.toString(),
+    ),
   });
 };
 
@@ -68,7 +83,7 @@ export const dislikeCard: RequestHandler = async (req, res) => {
   const card = await Card.findByIdAndUpdate(
     req.params.id,
     { $pull: { likes: req.user?._id } },
-    { new: true },
+    { returnDocument: 'after' },
   );
   if (!card) {
     throw Object.assign(
@@ -77,6 +92,12 @@ export const dislikeCard: RequestHandler = async (req, res) => {
         statusCode: 404,
       },
     );
+  }
+  if (card.owner.toString() !== req.user?._id?.toString()) {
+    res
+      .status(403)
+      .json({ message: 'No tienes permiso para eliminar esta tarjeta' });
+    return;
   }
   res.status(200).json(card);
 };

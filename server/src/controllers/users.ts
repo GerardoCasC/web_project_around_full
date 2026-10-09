@@ -17,8 +17,19 @@ export const getCurrentUser: RequestHandler = async (req, res) => {
       statusCode: 404,
     });
   }
-
-  res.status(200).json(user);
+  if (user._id.toString() !== req.user?._id?.toString()) {
+    res
+      .status(200)
+      .json({ name: user.name, about: user.about, avatar: user.avatar });
+    return;
+  }
+  res.status(200).json({
+    name: user.name,
+    about: user.about,
+    avatar: user.avatar,
+    email: user.email,
+    _id: user._id,
+  });
 };
 
 export const getUserById: RequestHandler = async (req, res) => {
@@ -29,28 +40,50 @@ export const getUserById: RequestHandler = async (req, res) => {
       statusCode: 404,
     });
   }
-  res.status(200).json(user);
+  if (user._id.toString() !== req.user?._id?.toString()) {
+    res
+      .status(200)
+      .json({ name: user.name, about: user.about, avatar: user.avatar });
+    return;
+  }
+  res.status(200).json({
+    name: user.name,
+    about: user.about,
+    avatar: user.avatar,
+    email: user.email,
+  });
 };
 
 // PATCH /users
 
 export const updateUser: RequestHandler = async (req, res) => {
   const user = await User.findByIdAndUpdate(req.user?._id, req.body, {
-    new: true,
+    returnDocument: 'after',
   });
   if (!user) {
     throw Object.assign(new Error('No se encontró ningún usuario con ese id'), {
       statusCode: 404,
     });
   }
-  res.status(200).json(user);
+  if (user._id.toString() !== req.user?._id?.toString()) {
+    res
+      .status(403)
+      .json({ message: 'No tienes permiso para actualizar este usuario' });
+    return;
+  }
+  res.status(200).json({
+    name: user.name,
+    about: user.about,
+    avatar: user.avatar,
+    email: user.email,
+  });
 };
 
 export const updateUserAvatar: RequestHandler = async (req, res) => {
   const user = await User.findByIdAndUpdate(
     req.user?._id,
     { avatar: req.body.avatar },
-    { new: true },
+    { returnDocument: 'after' },
   );
   if (!user) {
     throw Object.assign(new Error('No se encontró ningún usuario con ese id'), {
@@ -112,7 +145,7 @@ export const login: RequestHandler = async (req, res) => {
       statusCode: 401,
     });
   }
-  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
+  const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET!, {
     expiresIn: '7d',
   });
   res.status(200).json({ email: user.email, user_id: user._id, token });
