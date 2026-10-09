@@ -1,5 +1,5 @@
-import is_validated from "../images/is-validated.svg";
-import no_validated from "../images/no-validated.svg";
+import is_validated from "/src/images/is-validated.svg";
+import no_validated from "/src/images/no-validated.svg";
 
 type InfoTooltipProps = {
   isValidated: boolean;
