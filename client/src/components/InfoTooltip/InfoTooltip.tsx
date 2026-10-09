@@ -1,6 +1,10 @@
+import is_validated from "../images/is-validated.svg";
+import no_validated from "../images/no-validated.svg";
+
 type InfoTooltipProps = {
   isValidated: boolean;
 };
+
 export default function InfoTooltip(
   props: InfoTooltipProps,
 ): React.JSX.Element {
@@ -10,7 +14,7 @@ export default function InfoTooltip(
       {isValidated ? (
         <>
           <div className="tooltip__content">
-            <img src={"../src/images/is-validated.svg"} alt={"Sucess"} />
+            <img src={is_validated} alt={"Success"} />
 
             <p className="tooltip__message">¡Correcto! Ya estás registrado.</p>
           </div>
@@ -18,7 +22,7 @@ export default function InfoTooltip(
       ) : (
         <>
           <div className="tooltip__content">
-            <img src={"../src/images/no-validated.svg"} alt={"Error"} />
+            <img src={no_validated} alt={"Error"} />
 
             <p className="tooltip__message">
               Uy, algo salió mal. Por favor, inténtalo de nuevo.
