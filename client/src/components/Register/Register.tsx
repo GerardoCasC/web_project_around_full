@@ -78,7 +78,7 @@ function Register(props: RegisterProps) {
               handleChange(e);
             }}
             placeholder="Contraseña"
-            minLength={2}
+            minLength={8}
             maxLength={30}
             required
             type="password"
