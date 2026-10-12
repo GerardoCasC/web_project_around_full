@@ -20,6 +20,7 @@ mongoose
   });
 
 const app = express();
+app.set('trust proxy', 1);
 app.use(cors({ origin: process.env.CLIENT_ORIGIN }));
 app.use(express.json());
 app.get('/health', (_req, res) => {

@@ -7,7 +7,13 @@ import jwt from 'jsonwebtoken';
 // GET /users
 export const getUsers: RequestHandler = async (req, res) => {
   const users = await User.find();
-  res.status(200).json(users);
+  res.status(200).json(
+    users.map((user) => ({
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+    })),
+  );
 };
 
 export const getCurrentUser: RequestHandler = async (req, res) => {
@@ -51,15 +57,20 @@ export const getUserById: RequestHandler = async (req, res) => {
     about: user.about,
     avatar: user.avatar,
     email: user.email,
+    _id: user._id,
   });
 };
 
 // PATCH /users
 
 export const updateUser: RequestHandler = async (req, res) => {
-  const user = await User.findByIdAndUpdate(req.user?._id, req.body, {
-    returnDocument: 'after',
-  });
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    { name: req.body.name, about: req.body.about },
+    {
+      returnDocument: 'after',
+    },
+  );
   if (!user) {
     throw Object.assign(new Error('No se encontró ningún usuario con ese id'), {
       statusCode: 404,
@@ -76,6 +87,7 @@ export const updateUser: RequestHandler = async (req, res) => {
     about: user.about,
     avatar: user.avatar,
     email: user.email,
+    _id: user._id,
   });
 };
 
@@ -83,14 +95,26 @@ export const updateUserAvatar: RequestHandler = async (req, res) => {
   const user = await User.findByIdAndUpdate(
     req.user?._id,
     { avatar: req.body.avatar },
-    { returnDocument: 'after' },
+    { returnDocument: 'after', runValidators: true },
   );
   if (!user) {
     throw Object.assign(new Error('No se encontró ningún usuario con ese id'), {
       statusCode: 404,
     });
   }
-  res.status(200).json(user);
+  if (user._id.toString() !== req.user?._id?.toString()) {
+    res
+      .status(403)
+      .json({ message: 'No tienes permiso para actualizar este usuario' });
+    return;
+  }
+  res.status(200).json({
+    name: user.name,
+    about: user.about,
+    avatar: user.avatar,
+    email: user.email,
+    _id: user._id,
+  });
 };
 
 // POST /users
@@ -116,7 +140,7 @@ export const createUser: RequestHandler = async (req, res) => {
   } catch (err: unknown) {
     if (err instanceof mongoose.mongo.MongoServerError && err.code === 11000) {
       throw Object.assign(new Error('Este email ya está en uso'), {
-        statusCode: 400,
+        statusCode: 409,
       });
     }
     throw err;
